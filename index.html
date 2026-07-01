@@ -35,6 +35,14 @@
         
         .correct-ans { border-color: #10b981 !important; background-color: #ecfdf5 !important; }
         .wrong-ans { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+
+        /* Anti-Cheat: Mencegah seleksi (blok) teks */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
     </style>
 </head>
 <body class="text-slate-800 h-screen overflow-hidden flex flex-col">
@@ -227,6 +235,15 @@
         <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition-colors shadow-lg shadow-blue-600/30">
             Kembali ke Layar Penuh
         </button>
+    </div>
+
+    <!-- Anti-Screenshot / Blur Overlay -->
+    <div id="anti-screenshot-overlay" class="hidden fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center p-6">
+        <div class="text-center">
+            <i class="fas fa-shield-alt text-6xl text-slate-300 mb-4"></i>
+            <h2 class="text-3xl font-bold text-slate-400 mb-2">Tampilan Disembunyikan</h2>
+            <p class="text-slate-500 max-w-md mx-auto">Aktivitas di luar jendela asesmen, perpindahan aplikasi, atau pengambilan tangkapan layar (screenshot) terdeteksi. Silakan kembali fokus ke halaman ini untuk melanjutkan.</p>
+        </div>
     </div>
 
 <script>
@@ -1079,6 +1096,54 @@ window.addEventListener('popstate', function(event) {
         history.pushState(null, document.title, location.href);
         // Cek juga karena biasanya klik back di mobile akan menutup fullscreen otomatis
         checkFullscreen();
+    }
+});
+
+/* --- FITUR ANTI-SCREENSHOT & ANTI-CHEAT --- */
+
+// 1. Mematikan Klik Kanan (Context Menu)
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+// 2. Fungsi menyembunyikan layar menjadi putih
+function hideScreenForSecurity() {
+    // Hanya aktifkan proteksi jika sedang ujian (belum dikumpulkan dan sedang login)
+    if (currentState.isLoggedIn && !currentState.submitted) {
+        document.getElementById('anti-screenshot-overlay').classList.remove('hidden');
+    }
+}
+
+function showScreenForSecurity() {
+    document.getElementById('anti-screenshot-overlay').classList.add('hidden');
+}
+
+// 3. Deteksi saat jendela kehilangan fokus (Snipping tool, notifikasi melayang, atau pindah app)
+window.addEventListener('blur', hideScreenForSecurity);
+window.addEventListener('focus', showScreenForSecurity);
+
+// 4. Deteksi API Visibilitas (Aplikasi terminimize / tab pindah)
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        hideScreenForSecurity();
+    } else {
+        showScreenForSecurity();
+    }
+});
+
+// 5. Deteksi tombol keyboard spesifik (Print Screen, Windows+Shift+S, Cmd+Shift+3/4)
+window.addEventListener('keyup', (e) => {
+    if (e.key === 'PrintScreen') {
+        try { navigator.clipboard.writeText(''); } catch(err) {} // Mencoba mengosongkan clipboard
+        hideScreenForSecurity();
+        setTimeout(showScreenForSecurity, 2000); // Tahan layar putih selama 2 detik
+    }
+});
+
+window.addEventListener('keydown', (e) => {
+    // Deteksi kombinasi Print (Ctrl+P) atau Shortcut Mac (Cmd+Shift)
+    if ((e.ctrlKey && e.key === 'p') || (e.metaKey && e.shiftKey)) {
+        e.preventDefault();
+        hideScreenForSecurity();
+        setTimeout(showScreenForSecurity, 2000);
     }
 });
 
