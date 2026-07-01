@@ -206,6 +206,19 @@
         </div>
     </div>
 
+    <!-- Submit Confirmation Modal (Custom untuk mencegah exit fullscreen) -->
+    <div id="submit-modal" class="hidden absolute inset-0 z-[60] bg-slate-900 bg-opacity-75 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden transform transition-all text-center p-6">
+            <i class="fas fa-question-circle text-4xl text-blue-500 mb-4"></i>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Konfirmasi Selesai</h3>
+            <p id="submit-msg" class="text-slate-600 mb-6 text-sm"></p>
+            <div class="flex gap-3">
+                <button onclick="cancelSubmit()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-lg transition-colors">Batal</button>
+                <button onclick="proceedSubmit()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg transition-colors">Ya, Selesai</button>
+            </div>
+        </div>
+    </div>
+
 <script>
 /* ==========================================
    DATA STIMULUS
@@ -921,14 +934,25 @@ function confirmSubmit() {
     const answered = Object.keys(currentState.answers).length;
     const total = questions.length;
     
-    let msg = `Anda telah menjawab ${answered} dari ${total} soal.\n\nApakah Anda yakin ingin menyelesaikan asesmen ini?`;
+    let msg = `Anda telah menjawab <b>${answered}</b> dari <b>${total}</b> soal.<br><br>Apakah Anda yakin ingin menyelesaikan asesmen ini?`;
     if (answered < total) {
-        msg = `PERINGATAN: Masih ada ${total - answered} soal yang BELUM dijawab!\n\nTetap kumpulkan?`;
+        msg = `<span class="text-red-600 font-semibold">PERINGATAN: Masih ada ${total - answered} soal yang BELUM dijawab!</span><br><br>Tetap kumpulkan?`;
     }
 
-    if (confirm(msg)) {
-        calculateScore();
-    }
+    // Memasukkan pesan ke dalam modal kustom
+    document.getElementById('submit-msg').innerHTML = msg;
+    document.getElementById('submit-modal').classList.remove('hidden');
+}
+
+function cancelSubmit() {
+    // Menutup modal konfirmasi selesai tanpa keluar dari fullscreen
+    document.getElementById('submit-modal').classList.add('hidden');
+}
+
+function proceedSubmit() {
+    // Lanjut menghitung skor dan tutup modal konfirmasi
+    document.getElementById('submit-modal').classList.add('hidden');
+    calculateScore();
 }
 
 function calculateScore() {
