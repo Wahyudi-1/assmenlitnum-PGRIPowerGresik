@@ -38,6 +38,7 @@
 </head>
 <body class="text-slate-800 h-screen overflow-hidden flex flex-col">
 
+    <!-- LOGIN SCREEN -->
     <div id="login-screen" class="absolute inset-0 z-50 bg-slate-50 flex items-center justify-center">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
             <div class="text-center mb-8">
@@ -66,7 +67,9 @@
         </div>
     </div>
 
+    <!-- MAIN APP SCREEN -->
     <div id="app-screen" class="hidden flex-col h-screen">
+        <!-- Header -->
         <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm z-10 shrink-0">
             <div class="flex items-center gap-3">
                 <button onclick="toggleSidebar()" class="text-slate-500 hover:text-slate-800 text-xl lg:hidden">
@@ -75,16 +78,22 @@
                 <h2 class="font-bold text-lg text-slate-800 hidden sm:block"><i class="fas fa-laptop-code text-blue-600 mr-2"></i>CBT - AKM Nasional</h2>
             </div>
             
+            <!-- Timer Display -->
             <div id="timer-display" class="hidden items-center justify-center bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full font-bold border border-slate-200 transition-colors">
                 <i class="fas fa-clock mr-2"></i> <span id="time-remaining">02:00:00</span>
             </div>
 
             <div class="flex items-center gap-4 text-sm font-medium text-slate-600">
-                <div id="user-info-display"><i class="fas fa-user-circle mr-1"></i> <span id="display-name">Siswa</span></div>
+                <div id="user-info-display" class="hidden sm:block"><i class="fas fa-user-circle mr-1"></i> <span id="display-name">Siswa</span></div>
+                <!-- Log Out Button -->
+                <button onclick="logout()" class="flex items-center gap-2 bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg transition-colors" title="Keluar">
+                    <i class="fas fa-sign-out-alt"></i> <span class="hidden sm:inline">Log Out</span>
+                </button>
             </div>
         </header>
 
         <div class="flex flex-1 overflow-hidden relative">
+            <!-- Sidebar Navigation -->
             <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col absolute lg:relative z-20 h-full transition-transform transform -translate-x-full lg:translate-x-0">
                 <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                     <h3 class="font-bold text-slate-700">Daftar Soal</h3>
@@ -104,15 +113,20 @@
                 </div>
             </aside>
 
+            <!-- Overlay for mobile sidebar -->
             <div id="sidebar-overlay" onclick="toggleSidebar()" class="absolute inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"></div>
 
+            <!-- Content Area -->
             <main class="flex-1 split-layout w-full">
+                <!-- Stimulus Pane -->
                 <div class="stimulus-pane relative">
                     <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-bl-lg">WACANA STIMULUS</div>
                     <div id="stimulus-content" class="text-slate-700 leading-relaxed mt-4">
-                        </div>
+                        <!-- Injected via JS -->
+                    </div>
                 </div>
 
+                <!-- Question Pane -->
                 <div class="question-pane relative flex flex-col">
                     <div class="mb-4 flex justify-between items-center">
                         <span id="question-badge" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full">Soal 1</span>
@@ -120,17 +134,21 @@
                     </div>
                     
                     <div id="question-text" class="text-lg font-semibold text-slate-800 mb-6">
-                        </div>
+                        <!-- Question text -->
+                    </div>
 
                     <div id="answer-area" class="flex-1">
-                        </div>
+                        <!-- Options / Interactive area -->
+                    </div>
 
+                    <!-- Feedback Area (Hidden during test, shown after submit) -->
                     <div id="feedback-area" class="hidden mt-8 p-5 rounded-xl border">
                         <div id="feedback-status" class="font-bold mb-2 flex items-center gap-2 text-lg"></div>
                         <div class="text-sm font-semibold text-slate-700 mb-1">Pembahasan:</div>
                         <div id="feedback-discussion" class="text-sm text-slate-600 leading-relaxed bg-white p-3 rounded border border-slate-100"></div>
                     </div>
 
+                    <!-- Navigation Footer -->
                     <div class="flex justify-between items-center mt-8 pt-4 border-t border-slate-200 shrink-0">
                         <button onclick="navigate(-1)" class="px-5 py-2 rounded border border-slate-300 text-slate-700 hover:bg-slate-100 font-medium transition"><i class="fas fa-chevron-left mr-2"></i> Sebelumnya</button>
                         <button onclick="navigate(1)" class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 font-medium transition">Selanjutnya <i class="fas fa-chevron-right ml-2"></i></button>
@@ -140,6 +158,7 @@
         </div>
     </div>
 
+    <!-- Result Modal -->
     <div id="result-modal" class="hidden absolute inset-0 z-50 bg-slate-900 bg-opacity-75 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all text-center">
             <div class="bg-blue-600 p-6">
@@ -302,48 +321,44 @@ const stimuli = {
    DATA SOAL (40 Butir)
 ========================================== */
 const questions = [
-    // --- LITERASI (1-15) ---
-    { id: 1, domain: 'literasi', type: 'mcq', level: 'L1', text: "Berdasarkan riset LPPN tahun 2023, berapa persentase remaja pengguna AI yang mengaku sekadar menyalin-tempel (copy-paste) tanpa memahami jawabannya?", options: ["30%", "45%", "62%", "78%"], answer: 1, discussion: "Terdapat secara eksplisit pada teks: '45% dari pengguna tersebut mengaku menyalin-tempel jawaban tanpa memverifikasi'." },
-    { id: 2, domain: 'literasi', type: 'mcq', level: 'L2', text: "Makna istilah 'Instant Gratification' dalam konteks artikel tersebut mengacu pada...", options: ["Kemampuan otak dalam merespons teknologi secara cepat", "Keinginan mendapatkan kepuasan atau hasil akhir secara instan tanpa proses yang sulit", "Metode pembelajaran adaptif yang diberikan oleh AI", "Sindrom ketakutan tertinggal informasi (FOMO) karena tidak memakai AI"], answer: 1, discussion: "Berdasarkan penjelasan psikolog, 'pemuasan instan' dihubungkan dengan jalan pintas dari AI yang membuat remaja tidak melalui proses metakognitif (berpikir keras)." },
-    { id: 3, domain: 'literasi', type: 'mcq', level: 'L2', text: "Apa kekhawatiran utama Dr. Haryono terkait penggunaan AI berlebih oleh remaja?", options: ["Remaja akan kehilangan pekerjaan di masa depan", "Menurunnya kemampuan mengingat rumus matematika", "Terhambatnya perkembangan kemampuan logika dan pemecahan masalah (metakognitif)", "Sekolah akan kesulitan memberikan nilai evaluasi"], answer: 2, discussion: "Dr. Haryono menyatakan 'kemampuan metakognitif (berpikir tentang proses berpikir) mereka tidak akan berkembang' karena selalu diberi jalan pintas." },
-    { id: 4, domain: 'literasi', type: 'mcq', level: 'L3', text: "Jika seorang siswa berpendapat, <i>'Saya selalu pakai AI agar nilai saya bagus tanpa harus capek baca buku'</i>. Berdasarkan teks, pandangan ini paling mencerminkan fenomena...", options: ["Kurangnya pedoman etika di sekolah", "Penurunan minat baca (30%) dikombinasikan dengan <i>Instant Gratification</i>", "Efektivitas AI sebagai asisten belajar adaptif", "Peningkatan literasi digital di kalangan pelajar"], answer: 1, discussion: "Pendapat tersebut adalah bukti nyata dampak negatif: menurunnya minat baca dan keinginan mendapat hasil instan (Instant Gratification)." },
-    { id: 5, domain: 'literasi', type: 'mcq', level: 'L3', text: "Penulis teks tersebut memiliki tujuan utama untuk...", options: ["Mempromosikan penggunaan ChatGPT di kalangan siswa", "Menuntut pemerintah memblokir semua aplikasi AI generatif", "Memaparkan dampak positif AI dan riset perkembangan otak", "Memberikan peringatan objektif tentang dilema psikologis dan etika akibat AI"], answer: 3, discussion: "Teks memberikan pandangan berimbang (menyebutkan AI sebagai akses instan) namun berfokus pada analisis data riset terkait kekhawatiran psikologis (sindrom instan) dan etika (plagiarisme)." },
-    { id: 6, domain: 'literasi', type: 'cmcq', level: 'L1', text: "Pilih pernyataan-pernyataan berikut yang merupakan FAKTA sesuai teks (Bisa pilih lebih dari satu):", options: ["Riset LPPN dilakukan terhadap 2.500 mahasiswa perguruan tinggi.", "78% remaja menggunakan AI untuk membantu mengerjakan tugas sekolah.", "Maraknya konten deepfake berpotensi memicu perundungan siber.", "Semua sekolah di Indonesia telah memiliki pedoman penggunaan AI yang jelas."], answer: [1, 2], discussion: "Riset dilakukan pada siswa SMP-SMA, bukan mahasiswa. Sekolah-sekolah BELUM memiliki pedoman yang jelas. Opsi 2 dan 3 benar sesuai teks." },
-    { id: 7, domain: 'literasi', type: 'cmcq', level: 'L2', text: "Berdasarkan artikel, dampak negatif penggunaan AI di kalangan remaja mencakup aspek apa saja?", options: ["Peningkatan daya ingat verbal", "Dilema etika seperti plagiarisme", "Ketergantungan psikologis yang memicu kecemasan saat tidak memakai AI", "Perkembangan sinapsis logika menjadi lebih cepat"], answer: [1, 2], discussion: "Teks menyebutkan masalah etika (plagiarisme, deepfake) dan ketergantungan (62% cemas jika dilarang memakai AI). Opsi 1 dan 4 justru kebalikan dari fakta teks." },
-    { id: 8, domain: 'literasi', type: 'cmcq', level: 'L2', text: "Manakah argumen yang mendukung pendapat bahwa sekolah perlu segera membuat regulasi tentang AI?", options: ["Banyak remaja menyalin-tempel tanpa paham isi materi.", "AI sering menyebarkan virus komputer ke perangkat sekolah.", "Adanya kebingungan batas wajar antara mencari referensi dan plagiarisme.", "AI membuat biaya operasional sekolah meningkat drastis."], answer: [0, 2], discussion: "Teks menekankan fenomena menyalin instan (45%) dan dilema etika/plagiarisme karena belum ada batasan wajar, menuntut adanya regulasi." },
-    { id: 9, domain: 'literasi', type: 'cmcq', level: 'L3', text: "Seandainya data penurunan minat baca (30%) diabaikan, potensi masalah jangka panjang apa yang tetap terjadi sesuai teks?", options: ["Gangguan kesehatan mata karena radiasi.", "Mandeknya kemampuan metakognitif (berpikir pemecahan masalah).", "Risiko masalah etika terkait penyebaran hoaks/deepfake.", "Remaja kehilangan kemampuan bersosialisasi secara langsung."], answer: [1, 2], discussion: "Teks secara khusus menyoroti masalah psikologis (kemampuan metakognitif) dan masalah etika/literasi digital (deepfake, cyberbullying). Masalah mata/sosialisasi tidak dibahas." },
-    { id: 10, domain: 'literasi', type: 'cmcq', level: 'L3', text: "Berikut ini solusi logis yang sesuai dengan semangat artikel untuk mengatasi masalah 'Instant Gratification' pada remaja:", options: ["Mewajibkan siswa menulis esai secara langsung di kelas dengan tulisan tangan tanpa internet.", "Membiarkan siswa memakai AI asal mencantumkan prompt yang digunakan.", "Guru mengubah metode evaluasi menjadi diskusi lisan yang menguji pemahaman mendalam.", "Menghukum penjara bagi remaja yang menggunakan ChatGPT."], answer: [0, 2], discussion: "Evaluasi tulisan tangan di kelas atau diskusi lisan secara langsung memaksa siswa melalui proses metakognitif dan berpikir mandiri, memotong kebergantungan pada AI instan." },
-    { id: 11, domain: 'literasi', type: 'tf', level: 'L1', text: "Menurut Dr. Haryono, AI dapat membantu mempercepat pembentukan sinapsis logika di otak remaja saat ini.", options: ["Benar", "Salah"], answer: 1, discussion: "Salah. Dr. Haryono justru menyatakan jika sering pakai AI, kemampuan logika/metakognitif TIDAK akan berkembang." },
-    { id: 12, domain: 'literasi', type: 'tf', level: 'L2', text: "Dapat disimpulkan bahwa lebih dari setengah responden riset LPPN merasa bergantung pada AI generatif saat menghadapi ujian esai.", options: ["Benar", "Salah"], answer: 0, discussion: "Benar. Teks menyebut '62% remaja merasa cemas/tidak percaya diri jika dilarang memakai AI', angka ini lebih dari setengah (50%)." },
-    { id: 13, domain: 'literasi', type: 'tf', level: 'L3', text: "Sikap penulis dalam artikel tersebut cenderung menolak seluruh bentuk kemajuan teknologi di ranah pendidikan.", options: ["Benar", "Salah"], answer: 1, discussion: "Salah. Penulis mengakui AI 'menawarkan akses instan dan menjadi asisten belajar adaptif'. Penulis bersifat kritis, bukan menolak total." },
-    { id: 14, domain: 'literasi', type: 'match', level: 'L2', text: "Pasangkan persentase data riset berikut dengan temuan yang tepat berdasarkan teks!", left: ["78%", "45%", "62%"], right: ["Merasa cemas jika dilarang memakai AI", "Penurunan minat baca buku fisik", "Menggunakan AI untuk tugas sekolah", "Menyalin-tempel tanpa verifikasi"], answer: { "0": "2", "1": "3", "2": "0" }, discussion: "78% untuk tugas sekolah; 45% untuk copy-paste; 62% untuk rasa cemas." },
-    { id: 15, domain: 'literasi', type: 'match', level: 'L3', text: "Pasangkan istilah atau konsep dengan konteks dampaknya pada artikel!", left: ["Deepfake", "Instant Gratification", "Metakognitif"], right: ["Kemampuan berpikir tentang proses pemecahan masalah", "Potensi perundungan siber (cyberbullying)", "Keinginan mendapat hasil tanpa melalui proses panjang"], answer: { "0": "1", "1": "2", "2": "0" }, discussion: "Deepfake berkaitan dengan cyberbullying. Instant gratification adalah hasil instan. Metakognitif adalah proses berpikir." },
-
-    // --- LITERASI (Tambahan Bandeng - 16-20) ---
+    // --- LITERASI (1-15: AI, 16-20: Bandeng) ---
+    { id: 1, domain: 'literasi', stimulus: 'literasi', type: 'mcq', level: 'L1', text: "Berdasarkan riset LPPN tahun 2023, berapa persentase remaja pengguna AI yang mengaku sekadar menyalin-tempel (copy-paste) tanpa memahami jawabannya?", options: ["30%", "45%", "62%", "78%"], answer: 1, discussion: "Terdapat secara eksplisit pada teks: '45% dari pengguna tersebut mengaku menyalin-tempel jawaban tanpa memverifikasi'." },
+    { id: 2, domain: 'literasi', stimulus: 'literasi', type: 'mcq', level: 'L2', text: "Makna istilah 'Instant Gratification' dalam konteks artikel tersebut mengacu pada...", options: ["Kemampuan otak dalam merespons teknologi secara cepat", "Keinginan mendapatkan kepuasan atau hasil akhir secara instan tanpa proses yang sulit", "Metode pembelajaran adaptif yang diberikan oleh AI", "Sindrom ketakutan tertinggal informasi (FOMO) karena tidak memakai AI"], answer: 1, discussion: "Berdasarkan penjelasan psikolog, 'pemuasan instan' dihubungkan dengan jalan pintas dari AI yang membuat remaja tidak melalui proses metakognitif (berpikir keras)." },
+    { id: 3, domain: 'literasi', stimulus: 'literasi', type: 'mcq', level: 'L2', text: "Apa kekhawatiran utama Dr. Haryono terkait penggunaan AI berlebih oleh remaja?", options: ["Remaja akan kehilangan pekerjaan di masa depan", "Menurunnya kemampuan mengingat rumus matematika", "Terhambatnya perkembangan kemampuan logika dan pemecahan masalah (metakognitif)", "Sekolah akan kesulitan memberikan nilai evaluasi"], answer: 2, discussion: "Dr. Haryono menyatakan 'kemampuan metakognitif (berpikir tentang proses berpikir) mereka tidak akan berkembang' karena selalu diberi jalan pintas." },
+    { id: 4, domain: 'literasi', stimulus: 'literasi', type: 'mcq', level: 'L3', text: "Jika seorang siswa berpendapat, <i>'Saya selalu pakai AI agar nilai saya bagus tanpa harus capek baca buku'</i>. Berdasarkan teks, pandangan ini paling mencerminkan fenomena...", options: ["Kurangnya pedoman etika di sekolah", "Penurunan minat baca (30%) dikombinasikan dengan <i>Instant Gratification</i>", "Efektivitas AI sebagai asisten belajar adaptif", "Peningkatan literasi digital di kalangan pelajar"], answer: 1, discussion: "Pendapat tersebut adalah bukti nyata dampak negatif: menurunnya minat baca dan keinginan mendapat hasil instan (Instant Gratification)." },
+    { id: 5, domain: 'literasi', stimulus: 'literasi', type: 'mcq', level: 'L3', text: "Penulis teks tersebut memiliki tujuan utama untuk...", options: ["Mempromosikan penggunaan ChatGPT di kalangan siswa", "Menuntut pemerintah memblokir semua aplikasi AI generatif", "Memaparkan dampak positif AI dan riset perkembangan otak", "Memberikan peringatan objektif tentang dilema psikologis dan etika akibat AI"], answer: 3, discussion: "Teks memberikan pandangan berimbang (menyebutkan AI sebagai akses instan) namun berfokus pada analisis data riset terkait kekhawatiran psikologis (sindrom instan) dan etika (plagiarisme)." },
+    { id: 6, domain: 'literasi', stimulus: 'literasi', type: 'cmcq', level: 'L1', text: "Pilih pernyataan-pernyataan berikut yang merupakan FAKTA sesuai teks (Bisa pilih lebih dari satu):", options: ["Riset LPPN dilakukan terhadap 2.500 mahasiswa perguruan tinggi.", "78% remaja menggunakan AI untuk membantu mengerjakan tugas sekolah.", "Maraknya konten deepfake berpotensi memicu perundungan siber.", "Semua sekolah di Indonesia telah memiliki pedoman penggunaan AI yang jelas."], answer: [1, 2], discussion: "Riset dilakukan pada siswa SMP-SMA, bukan mahasiswa. Sekolah-sekolah BELUM memiliki pedoman yang jelas. Opsi 2 dan 3 benar sesuai teks." },
+    { id: 7, domain: 'literasi', stimulus: 'literasi', type: 'cmcq', level: 'L2', text: "Berdasarkan artikel, dampak negatif penggunaan AI di kalangan remaja mencakup aspek apa saja?", options: ["Peningkatan daya ingat verbal", "Dilema etika seperti plagiarisme", "Ketergantungan psikologis yang memicu kecemasan saat tidak memakai AI", "Perkembangan sinapsis logika menjadi lebih cepat"], answer: [1, 2], discussion: "Teks menyebutkan masalah etika (plagiarisme, deepfake) dan ketergantungan (62% cemas jika dilarang memakai AI). Opsi 1 dan 4 justru kebalikan dari fakta teks." },
+    { id: 8, domain: 'literasi', stimulus: 'literasi', type: 'cmcq', level: 'L2', text: "Manakah argumen yang mendukung pendapat bahwa sekolah perlu segera membuat regulasi tentang AI?", options: ["Banyak remaja menyalin-tempel tanpa paham isi materi.", "AI sering menyebarkan virus komputer ke perangkat sekolah.", "Adanya kebingungan batas wajar antara mencari referensi dan plagiarisme.", "AI membuat biaya operasional sekolah meningkat drastis."], answer: [0, 2], discussion: "Teks menekankan fenomena menyalin instan (45%) dan dilema etika/plagiarisme karena belum ada batasan wajar, menuntut adanya regulasi." },
+    { id: 9, domain: 'literasi', stimulus: 'literasi', type: 'cmcq', level: 'L3', text: "Seandainya data penurunan minat baca (30%) diabaikan, potensi masalah jangka panjang apa yang tetap terjadi sesuai teks?", options: ["Gangguan kesehatan mata karena radiasi.", "Mandeknya kemampuan metakognitif (berpikir pemecahan masalah).", "Risiko masalah etika terkait penyebaran hoaks/deepfake.", "Remaja kehilangan kemampuan bersosialisasi secara langsung."], answer: [1, 2], discussion: "Teks secara khusus menyoroti masalah psikologis (kemampuan metakognitif) dan masalah etika/literasi digital (deepfake, cyberbullying). Masalah mata/sosialisasi tidak dibahas." },
+    { id: 10, domain: 'literasi', stimulus: 'literasi', type: 'cmcq', level: 'L3', text: "Berikut ini solusi logis yang sesuai dengan semangat artikel untuk mengatasi masalah 'Instant Gratification' pada remaja:", options: ["Mewajibkan siswa menulis esai secara langsung di kelas dengan tulisan tangan tanpa internet.", "Membiarkan siswa memakai AI asal mencantumkan prompt yang digunakan.", "Guru mengubah metode evaluasi menjadi diskusi lisan yang menguji pemahaman mendalam.", "Menghukum penjara bagi remaja yang menggunakan ChatGPT."], answer: [0, 2], discussion: "Evaluasi tulisan tangan di kelas atau diskusi lisan secara langsung memaksa siswa melalui proses metakognitif dan berpikir mandiri, memotong kebergantungan pada AI instan." },
+    { id: 11, domain: 'literasi', stimulus: 'literasi', type: 'tf', level: 'L1', text: "Menurut Dr. Haryono, AI dapat membantu mempercepat pembentukan sinapsis logika di otak remaja saat ini.", options: ["Benar", "Salah"], answer: 1, discussion: "Salah. Dr. Haryono justru menyatakan jika sering pakai AI, kemampuan logika/metakognitif TIDAK akan berkembang." },
+    { id: 12, domain: 'literasi', stimulus: 'literasi', type: 'tf', level: 'L2', text: "Dapat disimpulkan bahwa lebih dari setengah responden riset LPPN merasa bergantung pada AI generatif saat menghadapi ujian esai.", options: ["Benar", "Salah"], answer: 0, discussion: "Benar. Teks menyebut '62% remaja merasa cemas/tidak percaya diri jika dilarang memakai AI', angka ini lebih dari setengah (50%)." },
+    { id: 13, domain: 'literasi', stimulus: 'literasi', type: 'tf', level: 'L3', text: "Sikap penulis dalam artikel tersebut cenderung menolak seluruh bentuk kemajuan teknologi di ranah pendidikan.", options: ["Benar", "Salah"], answer: 1, discussion: "Salah. Penulis mengakui AI 'menawarkan akses instan dan menjadi asisten belajar adaptif'. Penulis bersifat kritis, bukan menolak total." },
+    { id: 14, domain: 'literasi', stimulus: 'literasi', type: 'match', level: 'L2', text: "Pasangkan persentase data riset berikut dengan temuan yang tepat berdasarkan teks!", left: ["78%", "45%", "62%"], right: ["Merasa cemas jika dilarang memakai AI", "Penurunan minat baca buku fisik", "Menggunakan AI untuk tugas sekolah", "Menyalin-tempel tanpa verifikasi"], answer: { "0": "2", "1": "3", "2": "0" }, discussion: "78% untuk tugas sekolah; 45% untuk copy-paste; 62% untuk rasa cemas." },
+    { id: 15, domain: 'literasi', stimulus: 'literasi', type: 'match', level: 'L3', text: "Pasangkan istilah atau konsep dengan konteks dampaknya pada artikel!", left: ["Deepfake", "Instant Gratification", "Metakognitif"], right: ["Kemampuan berpikir tentang proses pemecahan masalah", "Potensi perundungan siber (cyberbullying)", "Keinginan mendapat hasil tanpa melalui proses panjang"], answer: { "0": "1", "1": "2", "2": "0" }, discussion: "Deepfake berkaitan dengan cyberbullying. Instant gratification adalah hasil instan. Metakognitif adalah proses berpikir." },
     { id: 16, domain: 'literasi', stimulus: 'literasi2', type: 'mcq', level: 'L1', text: "Berdasarkan artikel, keunggulan gizi apa yang membuat ikan bandeng menjadi pilihan sehat untuk otak?", options: ["Kandungan protein yang lebih tinggi dari daging sapi", "Tingginya kandungan Omega-3 yang bahkan mengalahkan ikan salmon", "Memiliki tulang lunak yang kaya kalsium", "Bebas dari kolesterol jahat sepenuhnya"], answer: 1, discussion: "Disebutkan eksplisit di teks: 'ikan bandeng memiliki kandungan Omega-3 yang lebih tinggi dibandingkan dengan ikan salmon impor'." },
     { id: 17, domain: 'literasi', stimulus: 'literasi2', type: 'cmcq', level: 'L2', text: "Manakah dari pernyataan berikut yang merupakan penyebab utama terjadinya fenomena Banjir Rob di area tambak pesisir utara Jawa? (Pilih jawaban yang benar)", options: ["Tingginya curah hujan di hulu sungai", "Kenaikan permukaan air laut akibat perubahan iklim", "Penurunan muka tanah (land subsidence)", "Banyaknya sampah plastik yang menyumbat tanggul"], answer: [1, 2], discussion: "Teks menyebutkan: 'Kombinasi antara kenaikan permukaan air laut dan land subsidence (penurunan muka tanah) memicu fenomena Banjir Rob'." },
     { id: 18, domain: 'literasi', stimulus: 'literasi2', type: 'tf', level: 'L2', text: "Adaptasi menanam sabuk mangrove di bibir pantai bertujuan untuk mencegah penurunan muka tanah secara langsung.", options: ["Benar", "Salah"], answer: 1, discussion: "Salah. Mangrove berfungsi sebagai 'pemecah ombak alami', bukan untuk secara langsung menghentikan penurunan muka tanah (land subsidence)." },
     { id: 19, domain: 'literasi', stimulus: 'literasi2', type: 'match', level: 'L1', text: "Jodohkan istilah berikut dengan penjelasannya sesuai teks!", left: ["Omega-3", "Banjir Rob", "Mangrove"], right: ["Kandungan gizi tinggi untuk kecerdasan otak", "Fenomena air pasang laut yang melimpas ke daratan", "Tanaman pemecah ombak alami di bibir pantai", "Proses penurunan permukaan daratan"], answer: { "0": "0", "1": "1", "2": "2" }, discussion: "Omega-3 adalah gizi untuk otak. Banjir rob adalah limpasan air laut. Mangrove adalah pemecah ombak alami." },
     { id: 20, domain: 'literasi', stimulus: 'literasi2', type: 'mcq', level: 'L3', text: "Jika seorang petambak memiliki modal terbatas dan harus memilih satu adaptasi tercepat untuk menyelamatkan bandengnya bulan depan dari musim pasang laut, langkah paling logis berdasarkan masalah di teks adalah...", options: ["Membeli pakan bandeng berkualitas tinggi agar cepat panen", "Menanam bibit mangrove dan menunggu tumbuh besar", "Melakukan peninggian fisik tanggul tambak segera", "Mengganti jenis ikan bandeng dengan ikan air tawar"], answer: 2, discussion: "Mangrove butuh waktu bertahun-tahun untuk tumbuh berfungsi. Solusi tercepat mencegah 'air pasang melimpas melewati tanggul' adalah meninggikan fisik tanggul tersebut." },
 
-    // --- NUMERASI (21-35) ---
-    { id: 21, domain: 'numerasi', type: 'mcq', level: 'L1', text: "Berapa lama estimasi waktu yang dihemat jika seseorang bepergian sejauh 150 km menggunakan Kereta Cepat dibandingkan Mobil Listrik Pribadi?", options: ["30 menit", "45 menit", "60 menit", "90 menit"], answer: 2, discussion: "Waktu tempuh EV = 90 menit. Kereta Cepat = 30 menit. Selisih/penghematan waktu = 90 - 30 = 60 menit." },
-    { id: 22, domain: 'numerasi', type: 'mcq', level: 'L2', text: "Rasio (perbandingan) kecepatan maksimal operasional antara Mobil Listrik Pribadi dengan Kereta Cepat adalah...", options: ["1 : 2", "1 : 3", "12 : 35", "35 : 12"], answer: 2, discussion: "Kecepatan EV = 120, KC = 350. Rasio EV:KC = 120 : 350. Disederhanakan (dibagi 10) menjadi 12 : 35." },
-    { id: 23, domain: 'numerasi', type: 'mcq', level: 'L2', text: "Jika sekeluarga terdiri dari ayah, ibu, dan 2 anak (total 4 orang) bepergian 150 km, moda transportasi manakah yang biaya totalnya lebih murah, dan berapa biayanya?", options: ["Kereta Cepat dengan biaya total Rp 250.000", "Kereta Cepat dengan biaya total Rp 1.000.000", "Mobil Listrik dengan biaya total Rp 45.000", "Mobil Listrik dengan biaya total Rp 180.000"], answer: 2, discussion: "Biaya KC untuk 4 orang = 4 x Rp 250.000 = Rp 1.000.000. Biaya EV dihitung per kendaraan (1 mobil cukup untuk 5 org) = Rp 45.000 total. EV jauh lebih murah." },
-    { id: 24, domain: 'numerasi', type: 'mcq', level: 'L3', text: "Berdasarkan data, jejak emisi karbon EV per orang per km tertulis '45 gram (Asumsi diisi 1 orang)'. Jika mobil tersebut dinaiki maksimal secara penuh (5 orang), berapakah jejak karbon efektif EV per orang per km?", options: ["9 gram", "15 gram", "45 gram", "225 gram"], answer: 0, discussion: "Emisi total mobil per km = 45 gram (karena jika 1 orang = 45g/orang). Jika dinaiki 5 orang, emisi dibagi rata = 45 / 5 = 9 gram/orang per km." },
-    { id: 25, domain: 'numerasi', type: 'mcq', level: 'L3', text: "Seorang pebisnis menilai waktunya seharga Rp 150.000 per jam. Jika ia bepergian sendirian sejauh 150 km, pilihan transportasi mana yang secara nilai ekonomi (Biaya + Nilai Waktu) paling menguntungkan?", options: ["Kereta Cepat, karena nilainya setara Rp 325.000", "Kereta Cepat, karena nilainya setara Rp 250.000", "Mobil Listrik, karena nilainya setara Rp 270.000", "Mobil Listrik, karena nilainya setara Rp 45.000"], answer: 2, discussion: "Kereta (30mnt = 0,5 jam): Biaya tiket (250k) + Nilai Waktu (0,5 x 150k = 75k) = 325.000. \nEV (90mnt = 1,5 jam): Biaya listrik (45k) + Nilai Waktu (1,5 x 150k = 225k) = 270.000. EV tetap lebih menguntungkan secara nilai." },
-    { id: 26, domain: 'numerasi', type: 'cmcq', level: 'L1', text: "Manakah pernyataan perhitungan biaya yang BENAR berdasarkan tabel? (Bisa pilih lebih dari satu)", options: ["Biaya tiket Kereta Cepat untuk 3 orang adalah Rp 750.000.", "Biaya pengisian daya Mobil Listrik untuk jarak 300 km adalah Rp 90.000.", "Biaya Kereta Cepat selalu lebih murah dibandingkan Mobil Listrik, berapapun jumlah penumpangnya.", "Biaya operasional Mobil Listrik dihitung per kepala/penumpang."], answer: [0, 1], discussion: "KC untuk 3 orang = 3 x 250k = 750k (Benar). EV untuk 300km (2x lipat dari 150km) = 2 x 45k = 90k (Benar). Opsi 3 & 4 salah." },
-    { id: 27, domain: 'numerasi', type: 'cmcq', level: 'L2', text: "Jika ditinjau dari aspek keramahan lingkungan (Emisi CO2) per jarak 150 km:", options: ["Seorang yang bepergian sendiri dengan EV menghasilkan total 6.750 gram CO2.", "Satu penumpang Kereta Cepat menghasilkan total 2.250 gram CO2.", "EV akan menjadi lebih ramah lingkungan per penumpang jika diisi lebih dari 3 orang dibanding KC.", "Kereta cepat sama sekali tidak menghasilkan polusi gas rumah kaca."], answer: [0, 1, 2], discussion: "EV 1 orang (150km) = 150 x 45g = 6.750g (Benar). KC 1 orang = 150 x 15g = 2.250g (Benar). EV 4 orang = 45/4=11.25g per orang (<15g, Benar). KC tetap hasilkan CO2 (listrik), tidak nol." },
-    { id: 28, domain: 'numerasi', type: 'cmcq', level: 'L2', text: "Terkait kapasitas transportasi, pernyataan mana yang tepat?", options: ["Kapasitas satu rangkaian Kereta Cepat setara dengan 120 buah Mobil Listrik yang terisi penuh.", "Untuk mengangkut 600 orang, dibutuhkan setidaknya 150 Mobil Listrik berpenumpang penuh.", "Kereta cepat lebih efisien dalam ruang jalan per penumpang dibandingkan EV.", "Mobil Listrik memiliki fleksibilitas rute yang lebih kaku dibanding kereta cepat."], answer: [0, 2], discussion: "600 orang / 5 orang per EV = 120 EV (Opsi 1 Benar, Opsi 2 Salah). Transportasi massal (KC) jelas lebih efisien dalam kepadatan jalan raya. EV lebih fleksibel (Opsi 4 terbalik)." },
-    { id: 29, domain: 'numerasi', type: 'cmcq', level: 'L3', text: "Dua orang teman, Budi dan Andi, ingin ke kota sebelah berjarak 150km. Budi ingin naik KC, Andi ingin patungan naik EV milik Andi. Jika mereka memutuskan naik EV berdua...", options: ["Mereka masing-masing berhemat Rp 227.500 dibanding naik KC.", "Total emisi karbon gabungan mereka adalah 13.500 gram CO2.", "Waktu yang terbuang lebih lama 60 menit dibanding naik KC.", "Emisi karbon per orang mereka adalah 22,5 gram per km."], answer: [0, 2, 3], discussion: "EV berdua: Biaya 45k patungan (22,5k per orang). KC: 250k. Hemat = 250k - 22,5k = 227.500 (Benar). Emisi EV tetap 45g/km per mobil, total emisi berdua (150km) = 45 x 150 = 6.750g (Opsi 2 Salah). Waktu selisih 60 mnt (Benar). Emisi per orang = 45/2 = 22,5 g/km (Benar)." },
-    { id: 30, domain: 'numerasi', type: 'cmcq', level: 'L3', text: "Asumsikan tiket KC didiskon 20% khusus pelajar. Seorang rombongan pelajar 5 orang mempertimbangkan KC (dengan diskon) vs menyewa EV yang memakan biaya listrik Rp 45.000 + biaya sewa mobil Rp 300.000. Mana analisis yang benar?", options: ["Harga tiket KC pelajar menjadi Rp 200.000 per orang.", "Total biaya KC untuk 5 pelajar adalah Rp 1.000.000.", "Total pengeluaran jika menggunakan EV sewaan adalah Rp 345.000.", "Naik EV sewaan lebih mahal daripada naik KC berlima."], answer: [0, 1, 2], discussion: "Diskon 20% dari 250k = 50k. Harga jadi 200k (Benar). 5 x 200k = 1.000.000 (Benar). EV = 300k sewa + 45k listrik = 345k (Benar). EV tetap jauh lebih murah (345k vs 1.000k), opsi 4 salah." },
-    { id: 31, domain: 'numerasi', type: 'tf', level: 'L1', text: "Jika seseorang rutin pulang pergi (PP) kota tersebut (total 300 km) menggunakan EV sendirian, maka total biaya listrik yang ia keluarkan dalam sehari adalah Rp 90.000.", options: ["Benar", "Salah"], answer: 0, discussion: "Benar. Jarak PP = 150km x 2. Biaya = Rp 45.000 x 2 = Rp 90.000." },
-    { id: 32, domain: 'numerasi', type: 'tf', level: 'L2', text: "Berdasarkan rasio emisi, Kereta Cepat selalu lebih ramah lingkungan (CO2/orang/km lebih kecil) dibanding EV dalam kondisi apa pun (termasuk saat EV diisi penuh penumpang).", options: ["Benar", "Salah"], answer: 1, discussion: "Salah. Jika EV diisi penuh (5 orang), emisinya 45/5 = 9 gram/orang. Ini LEBIH KECIL (lebih ramah) dibanding Kereta Cepat yang 15 gram/orang." },
-    { id: 33, domain: 'numerasi', type: 'match', level: 'L1', text: "Pasangkan data metrik di sebelah kiri dengan nilai yang sesuai untuk Kereta Cepat di sebelah kanan!", left: ["Kecepatan", "Waktu tempuh 150km", "Emisi Karbon"], right: ["30 menit", "15 gram / orang / km", "120 km/jam", "350 km/jam"], answer: { "0": "3", "1": "0", "2": "1" }, discussion: "Kecepatan KC 350 km/jam. Waktu tempuh 30 menit. Emisi 15 gram." },
-    { id: 34, domain: 'numerasi', type: 'match', level: 'L2', text: "Hitung dan pasangkan moda transportasi / skenario dengan total emisi CO2 yang dihasilkan untuk jarak 150km!", left: ["1 penumpang naik Kereta Cepat", "1 mobil EV berisi 1 orang", "1 mobil EV berisi 3 orang"], right: ["6.750 gram (Total Emisi Kendaraan)", "2.250 gram", "10.500 gram"], answer: { "0": "1", "1": "0", "2": "0" }, discussion: "KC 1 org: 15g x 150km = 2.250 gram. EV 1 org maupun 3 org emisinya tetap dihitung per mobil yaitu 45g x 150km = 6.750 gram total." },
-    { id: 35, domain: 'numerasi', type: 'match', level: 'L3', text: "Sebuah perusahaan memiliki anggaran perjalanan maksimal Rp 500.000. Pasangkan skenario perjalanan di sebelah kiri dengan status kelayakannya (Bisa/Tidak Bisa) di sebelah kanan!", left: ["2 orang naik Kereta Cepat", "3 orang naik Kereta Cepat", "Sewa 1 mobil EV (Rp 250rb) + Listrik"], right: ["Bisa (Sisa Anggaran 205rb)", "Tidak Bisa (Defisit 250rb)", "Bisa (Anggaran Pas)"], answer: { "0": "2", "1": "1", "2": "0" }, discussion: "2 org KC (500k) -> Anggaran Pas. 3 org KC (750k) -> Defisit 250k. Sewa EV+Listrik (250k+45k=295k) -> Sisa 205k." },
-
-    // --- NUMERASI (Tambahan Gresik Industri - 36-40) ---
+    // --- NUMERASI (21-35: EV, 36-40: Industri Gresik) ---
+    { id: 21, domain: 'numerasi', stimulus: 'numerasi', type: 'mcq', level: 'L1', text: "Berapa lama estimasi waktu yang dihemat jika seseorang bepergian sejauh 150 km menggunakan Kereta Cepat dibandingkan Mobil Listrik Pribadi?", options: ["30 menit", "45 menit", "60 menit", "90 menit"], answer: 2, discussion: "Waktu tempuh EV = 90 menit. Kereta Cepat = 30 menit. Selisih/penghematan waktu = 90 - 30 = 60 menit." },
+    { id: 22, domain: 'numerasi', stimulus: 'numerasi', type: 'mcq', level: 'L2', text: "Rasio (perbandingan) kecepatan maksimal operasional antara Mobil Listrik Pribadi dengan Kereta Cepat adalah...", options: ["1 : 2", "1 : 3", "12 : 35", "35 : 12"], answer: 2, discussion: "Kecepatan EV = 120, KC = 350. Rasio EV:KC = 120 : 350. Disederhanakan (dibagi 10) menjadi 12 : 35." },
+    { id: 23, domain: 'numerasi', stimulus: 'numerasi', type: 'mcq', level: 'L2', text: "Jika sekeluarga terdiri dari ayah, ibu, dan 2 anak (total 4 orang) bepergian 150 km, moda transportasi manakah yang biaya totalnya lebih murah, dan berapa biayanya?", options: ["Kereta Cepat dengan biaya total Rp 250.000", "Kereta Cepat dengan biaya total Rp 1.000.000", "Mobil Listrik dengan biaya total Rp 45.000", "Mobil Listrik dengan biaya total Rp 180.000"], answer: 2, discussion: "Biaya KC untuk 4 orang = 4 x Rp 250.000 = Rp 1.000.000. Biaya EV dihitung per kendaraan (1 mobil cukup untuk 5 org) = Rp 45.000 total. EV jauh lebih murah." },
+    { id: 24, domain: 'numerasi', stimulus: 'numerasi', type: 'mcq', level: 'L3', text: "Berdasarkan data, jejak emisi karbon EV per orang per km tertulis '45 gram (Asumsi diisi 1 orang)'. Jika mobil tersebut dinaiki maksimal secara penuh (5 orang), berapakah jejak karbon efektif EV per orang per km?", options: ["9 gram", "15 gram", "45 gram", "225 gram"], answer: 0, discussion: "Emisi total mobil per km = 45 gram (karena jika 1 orang = 45g/orang). Jika dinaiki 5 orang, emisi dibagi rata = 45 / 5 = 9 gram/orang per km." },
+    { id: 25, domain: 'numerasi', stimulus: 'numerasi', type: 'mcq', level: 'L3', text: "Seorang pebisnis menilai waktunya seharga Rp 150.000 per jam. Jika ia bepergian sendirian sejauh 150 km, pilihan transportasi mana yang secara nilai ekonomi (Biaya + Nilai Waktu) paling menguntungkan?", options: ["Kereta Cepat, karena nilainya setara Rp 325.000", "Kereta Cepat, karena nilainya setara Rp 250.000", "Mobil Listrik, karena nilainya setara Rp 270.000", "Mobil Listrik, karena nilainya setara Rp 45.000"], answer: 2, discussion: "Kereta (30mnt = 0,5 jam): Biaya tiket (250k) + Nilai Waktu (0,5 x 150k = 75k) = 325.000. \nEV (90mnt = 1,5 jam): Biaya listrik (45k) + Nilai Waktu (1,5 x 150k = 225k) = 270.000. EV tetap lebih menguntungkan secara nilai." },
+    { id: 26, domain: 'numerasi', stimulus: 'numerasi', type: 'cmcq', level: 'L1', text: "Manakah pernyataan perhitungan biaya yang BENAR berdasarkan tabel? (Bisa pilih lebih dari satu)", options: ["Biaya tiket Kereta Cepat untuk 3 orang adalah Rp 750.000.", "Biaya pengisian daya Mobil Listrik untuk jarak 300 km adalah Rp 90.000.", "Biaya Kereta Cepat selalu lebih murah dibandingkan Mobil Listrik, berapapun jumlah penumpangnya.", "Biaya operasional Mobil Listrik dihitung per kepala/penumpang."], answer: [0, 1], discussion: "KC untuk 3 orang = 3 x 250k = 750k (Benar). EV untuk 300km (2x lipat dari 150km) = 2 x 45k = 90k (Benar). Opsi 3 & 4 salah." },
+    { id: 27, domain: 'numerasi', stimulus: 'numerasi', type: 'cmcq', level: 'L2', text: "Jika ditinjau dari aspek keramahan lingkungan (Emisi CO2) per jarak 150 km:", options: ["Seorang yang bepergian sendiri dengan EV menghasilkan total 6.750 gram CO2.", "Satu penumpang Kereta Cepat menghasilkan total 2.250 gram CO2.", "EV akan menjadi lebih ramah lingkungan per penumpang jika diisi lebih dari 3 orang dibanding KC.", "Kereta cepat sama sekali tidak menghasilkan polusi gas rumah kaca."], answer: [0, 1, 2], discussion: "EV 1 orang (150km) = 150 x 45g = 6.750g (Benar). KC 1 orang = 150 x 15g = 2.250g (Benar). EV 4 orang = 45/4=11.25g per orang (<15g, Benar). KC tetap hasilkan CO2 (listrik), tidak nol." },
+    { id: 28, domain: 'numerasi', stimulus: 'numerasi', type: 'cmcq', level: 'L2', text: "Terkait kapasitas transportasi, pernyataan mana yang tepat?", options: ["Kapasitas satu rangkaian Kereta Cepat setara dengan 120 buah Mobil Listrik yang terisi penuh.", "Untuk mengangkut 600 orang, dibutuhkan setidaknya 150 Mobil Listrik berpenumpang penuh.", "Kereta cepat lebih efisien dalam ruang jalan per penumpang dibandingkan EV.", "Mobil Listrik memiliki fleksibilitas rute yang lebih kaku dibanding kereta cepat."], answer: [0, 2], discussion: "600 orang / 5 orang per EV = 120 EV (Opsi 1 Benar, Opsi 2 Salah). Transportasi massal (KC) jelas lebih efisien dalam kepadatan jalan raya. EV lebih fleksibel (Opsi 4 terbalik)." },
+    { id: 29, domain: 'numerasi', stimulus: 'numerasi', type: 'cmcq', level: 'L3', text: "Dua orang teman, Budi dan Andi, ingin ke kota sebelah berjarak 150km. Budi ingin naik KC, Andi ingin patungan naik EV milik Andi. Jika mereka memutuskan naik EV berdua...", options: ["Mereka masing-masing berhemat Rp 227.500 dibanding naik KC.", "Total emisi karbon gabungan mereka adalah 13.500 gram CO2.", "Waktu yang terbuang lebih lama 60 menit dibanding naik KC.", "Emisi karbon per orang mereka adalah 22,5 gram per km."], answer: [0, 2, 3], discussion: "EV berdua: Biaya 45k patungan (22,5k per orang). KC: 250k. Hemat = 250k - 22,5k = 227.500 (Benar). Emisi EV tetap 45g/km per mobil, total emisi berdua (150km) = 45 x 150 = 6.750g (Opsi 2 Salah). Waktu selisih 60 mnt (Benar). Emisi per orang = 45/2 = 22,5 g/km (Benar)." },
+    { id: 30, domain: 'numerasi', stimulus: 'numerasi', type: 'cmcq', level: 'L3', text: "Asumsikan tiket KC didiskon 20% khusus pelajar. Seorang rombongan pelajar 5 orang mempertimbangkan KC (dengan diskon) vs menyewa EV yang memakan biaya listrik Rp 45.000 + biaya sewa mobil Rp 300.000. Mana analisis yang benar?", options: ["Harga tiket KC pelajar menjadi Rp 200.000 per orang.", "Total biaya KC untuk 5 pelajar adalah Rp 1.000.000.", "Total pengeluaran jika menggunakan EV sewaan adalah Rp 345.000.", "Naik EV sewaan lebih mahal daripada naik KC berlima."], answer: [0, 1, 2], discussion: "Diskon 20% dari 250k = 50k. Harga jadi 200k (Benar). 5 x 200k = 1.000.000 (Benar). EV = 300k sewa + 45k listrik = 345k (Benar). EV tetap jauh lebih murah (345k vs 1.000k), opsi 4 salah." },
+    { id: 31, domain: 'numerasi', stimulus: 'numerasi', type: 'tf', level: 'L1', text: "Jika seseorang rutin pulang pergi (PP) kota tersebut (total 300 km) menggunakan EV sendirian, maka total biaya listrik yang ia keluarkan dalam sehari adalah Rp 90.000.", options: ["Benar", "Salah"], answer: 0, discussion: "Benar. Jarak PP = 150km x 2. Biaya = Rp 45.000 x 2 = Rp 90.000." },
+    { id: 32, domain: 'numerasi', stimulus: 'numerasi', type: 'tf', level: 'L2', text: "Berdasarkan rasio emisi, Kereta Cepat selalu lebih ramah lingkungan (CO2/orang/km lebih kecil) dibanding EV dalam kondisi apa pun (termasuk saat EV diisi penuh penumpang).", options: ["Benar", "Salah"], answer: 1, discussion: "Salah. Jika EV diisi penuh (5 orang), emisinya 45/5 = 9 gram/orang. Ini LEBIH KECIL (lebih ramah) dibanding Kereta Cepat yang 15 gram/orang." },
+    { id: 33, domain: 'numerasi', stimulus: 'numerasi', type: 'match', level: 'L1', text: "Pasangkan data metrik di sebelah kiri dengan nilai yang sesuai untuk Kereta Cepat di sebelah kanan!", left: ["Kecepatan", "Waktu tempuh 150km", "Emisi Karbon"], right: ["30 menit", "15 gram / orang / km", "120 km/jam", "350 km/jam"], answer: { "0": "3", "1": "0", "2": "1" }, discussion: "Kecepatan KC 350 km/jam. Waktu tempuh 30 menit. Emisi 15 gram." },
+    { id: 34, domain: 'numerasi', stimulus: 'numerasi', type: 'match', level: 'L2', text: "Hitung dan pasangkan moda transportasi / skenario dengan total emisi CO2 yang dihasilkan untuk jarak 150km!", left: ["1 penumpang naik Kereta Cepat", "1 mobil EV berisi 1 orang", "1 mobil EV berisi 3 orang"], right: ["6.750 gram (Total Emisi Kendaraan)", "2.250 gram", "10.500 gram"], answer: { "0": "1", "1": "0", "2": "0" }, discussion: "KC 1 org: 15g x 150km = 2.250 gram. EV 1 org maupun 3 org emisinya tetap dihitung per mobil yaitu 45g x 150km = 6.750 gram total." },
+    { id: 35, domain: 'numerasi', stimulus: 'numerasi', type: 'match', level: 'L3', text: "Sebuah perusahaan memiliki anggaran perjalanan maksimal Rp 500.000. Pasangkan skenario perjalanan di sebelah kiri dengan status kelayakannya (Bisa/Tidak Bisa) di sebelah kanan!", left: ["2 orang naik Kereta Cepat", "3 orang naik Kereta Cepat", "Sewa 1 mobil EV (Rp 250rb) + Listrik"], right: ["Bisa (Sisa Anggaran 205rb)", "Tidak Bisa (Defisit 250rb)", "Bisa (Anggaran Pas)"], answer: { "0": "2", "1": "1", "2": "0" }, discussion: "2 org KC (500k) -> Anggaran Pas. 3 org KC (750k) -> Defisit 250k. Sewa EV+Listrik (250k+45k=295k) -> Sisa 205k." },
     { id: 36, domain: 'numerasi', stimulus: 'numerasi2', type: 'mcq', level: 'L1', text: "Sektor industri manakah yang menyerap total tenaga kerja (jumlah pekerja seluruh pabrik) paling banyak di Gresik?", options: ["Semen & Material Konstruksi", "Pupuk & Petrokimia", "Pengolahan Kayu & Kertas", "Semua sektor menyerap tenaga kerja sama besar"], answer: 2, discussion: "Semen = 5 x 1.200 = 6.000. Pupuk = 3 x 2.500 = 7.500. Kayu = 10 x 800 = 8.000. Jadi, Pengolahan Kayu & Kertas menyerap pekerja paling banyak (8.000 orang)." },
     { id: 37, domain: 'numerasi', stimulus: 'numerasi2', type: 'cmcq', level: 'L2', text: "Pilih pernyataan-pernyataan berikut yang hitungannya BENAR berdasarkan tabel! (Bisa pilih lebih dari satu)", options: ["Total keseluruhan pekerja di ketiga sektor tersebut adalah 21.500 orang.", "Rata-rata emisi satu pabrik Semen adalah 120.000 Ton/Tahun.", "Pabrik Pupuk & Petrokimia menyumbang total emisi terbesar dari ketiga sektor.", "Terdapat total 18 pabrik berskala besar pada agregat data tersebut."], answer: [0, 1, 3], discussion: "Total pekerja = 6000 + 7500 + 8000 = 21.500 (Benar). Emisi 1 pabrik semen = 600.000 / 5 = 120.000 Ton (Benar). Total emisi semen terbesar, bukan pupuk (Opsi 3 Salah). Total pabrik = 5 + 3 + 10 = 18 (Benar)." },
     { id: 38, domain: 'numerasi', stimulus: 'numerasi2', type: 'tf', level: 'L2', text: "Jika dihitung rasio Emisi Karbon per Pekerja (Total Emisi dibagi Total Pekerja Sektor), Sektor Pupuk & Petrokimia memiliki rasio (jejak karbon pekerja) yang lebih tinggi dibandingkan Sektor Semen.", options: ["Benar", "Salah"], answer: 1, discussion: "Salah. Rasio Pupuk = 450.000 / 7.500 = 60 ton/pekerja. Rasio Semen = 600.000 / 6.000 = 100 ton/pekerja. Semen jauh lebih tinggi." },
@@ -403,6 +418,52 @@ function startQuiz() {
     startTimer();
 }
 
+// Log Out & Reset Function
+function logout() {
+    if (confirm("Apakah Anda yakin ingin keluar? Seluruh sesi dan data akan di-reset.")) {
+        // Keluar dari Fullscreen jika ada
+        if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(err => console.log(err));
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // Hentikan dan reset Timer
+        if (timerInterval) clearInterval(timerInterval);
+        timeRemaining = TOTAL_TIME;
+
+        // Reset State App
+        currentState = {
+            student: { name: '', class: '' },
+            currentIndex: 0,
+            answers: {},
+            submitted: false
+        };
+
+        // Reset Formulir & UI
+        document.getElementById('student-name').value = '';
+        document.getElementById('student-class').value = '';
+        
+        document.getElementById('app-screen').classList.add('hidden');
+        document.getElementById('app-screen').classList.remove('flex');
+        document.getElementById('result-modal').classList.add('hidden');
+        document.getElementById('login-screen').classList.remove('hidden');
+        
+        // Kembalikan tombol submit yang disembunyikan waktu review
+        document.getElementById('btn-submit').classList.remove('hidden');
+        
+        // Kembalikan tampilan default Timer
+        const timerEl = document.getElementById('timer-display');
+        timerEl.classList.add('hidden');
+        timerEl.classList.remove('bg-red-600', 'text-white', 'border-red-700', 'animate-pulse');
+        timerEl.classList.add('bg-slate-100', 'text-slate-700', 'border-slate-200');
+    }
+}
+
 function startTimer() {
     updateTimerUI(); // initial update
     timerInterval = setInterval(() => {
@@ -411,8 +472,8 @@ function startTimer() {
         
         if (timeRemaining <= 0) {
             clearInterval(timerInterval);
-            alert("Waktu Habis! Asesmen Anda akan dikumpulkan secara otomatis.");
-            calculateScore();
+            alert("Waktu Habis! Asesmen Anda dikumpulkan secara otomatis.");
+            calculateScore(); // Secara paksa merender hasil ujian
         }
     }, 1000);
 }
@@ -832,16 +893,9 @@ function calculateScore() {
     if (timerInterval) clearInterval(timerInterval);
     document.getElementById('timer-display').classList.add('hidden');
 
-    // Keluar dari Fullscreen
-    if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-        if (document.exitFullscreen) {
-            document.exitFullscreen().catch(err => console.log(err));
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-    }
+    // Catatan: Baris kode exitFullscreen dihapus dari fungsi ini
+    // sehingga saat siswa mengecek nilai dan masuk mode review,
+    // aplikasi akan tetap berada dalam keadaan Fullscreen.
 
     currentState.submitted = true;
     let litCorrect = 0;
