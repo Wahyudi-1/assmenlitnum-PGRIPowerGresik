@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asesmen LitNum PGRI Power Gresik</title>
+    <title>Asesmen Interaktif LitNum PGRI Power Gresik</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -84,7 +84,7 @@
                 <button onclick="toggleSidebar()" class="text-slate-500 hover:text-slate-800 text-xl lg:hidden">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h2 class="font-bold text-lg text-slate-800 hidden sm:block"><i class="fas fa-laptop-code text-blue-600 mr-2"></i>CBT - Asesmen LitNum</h2>
+                <h2 class="font-bold text-lg text-slate-800 hidden sm:block"><i class="fas fa-laptop-code text-blue-600 mr-2"></i>CBT - LitNum PGRI Power Gresik</h2>
             </div>
             
             <!-- Timer Display -->
@@ -238,12 +238,19 @@
     </div>
 
     <!-- Anti-Screenshot / Blur Overlay -->
-    <div id="anti-screenshot-overlay" class="hidden fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center p-6">
+    <div id="anti-screenshot-overlay" class="hidden fixed inset-0 z-[110] bg-white flex flex-col items-center justify-center p-6">
         <div class="text-center">
             <i class="fas fa-shield-alt text-6xl text-slate-300 mb-4"></i>
             <h2 class="text-3xl font-bold text-slate-400 mb-2">Tampilan Disembunyikan</h2>
-            <p class="text-slate-500 max-w-md mx-auto">Aktivitas di luar jendela asesmen, perpindahan aplikasi, atau pengambilan tangkapan layar (screenshot) terdeteksi. Silakan kembali fokus ke halaman ini untuk melanjutkan.</p>
+            <p class="text-slate-500 max-w-md mx-auto">Aktivitas di luar jendela asesmen, pengambilan tangkapan layar (screenshot), atau perpindahan tab terdeteksi. Sistem melindungi kerahasiaan soal. Silakan sentuh layar/fokus kembali untuk melanjutkan.</p>
         </div>
+    </div>
+
+    <!-- Split-Screen / Resize Enforcer Overlay -->
+    <div id="split-screen-overlay" class="hidden fixed inset-0 z-[120] bg-red-900 flex flex-col items-center justify-center p-6 text-center">
+        <i class="fas fa-mobile-alt text-6xl text-white mb-4 animate-pulse"></i>
+        <h2 class="text-3xl font-bold text-white mb-2">Pelanggaran Layar Terdeteksi</h2>
+        <p class="text-red-200 max-w-md mx-auto mb-6">Aplikasi mendeteksi penggunaan Split-Screen, Multi-Window, atau layar yang diperkecil secara tidak wajar.<br><br>Sistem mewajibkan jendela aplikasi tampil penuh. Silakan kembalikan ukuran layar secara normal tanpa membaginya dengan aplikasi lain untuk melanjutkan pengerjaan.</p>
     </div>
 
 <script>
@@ -495,12 +502,10 @@ function startQuiz() {
 
 // Log Out Modal Triggers
 function logout() {
-    // Tampilkan modal kustom tanpa memanggil window.confirm() bawaan browser
     document.getElementById('logout-modal').classList.remove('hidden');
 }
 
 function cancelLogout() {
-    // Tutup modal, biarkan fullscreen tetap aktif
     document.getElementById('logout-modal').classList.add('hidden');
 }
 
@@ -535,7 +540,7 @@ function confirmLogout() {
     // Reset Formulir & UI
     document.getElementById('student-name').value = '';
     document.getElementById('student-class').value = '';
-    validateLogin(); // Validasi ulang tombol mulai
+    validateLogin(); 
     
     document.getElementById('app-screen').classList.add('hidden');
     document.getElementById('app-screen').classList.remove('flex');
@@ -562,7 +567,7 @@ function startTimer() {
         if (timeRemaining <= 0) {
             clearInterval(timerInterval);
             alert("Waktu Habis! Asesmen Anda dikumpulkan secara otomatis.");
-            calculateScore(); // Panggil fungsi render hasil tanpa exit fullscreen
+            calculateScore(); 
         }
     }, 1000);
 }
@@ -574,7 +579,6 @@ function updateTimerUI() {
     
     document.getElementById('time-remaining').textContent = `${h}:${m}:${s}`;
     
-    // Warning Alert jika sisa waktu di bawah 5 menit (300 detik)
     if (timeRemaining < 300 && timeRemaining > 0) {
         const timerEl = document.getElementById('timer-display');
         timerEl.classList.remove('bg-slate-100', 'text-slate-700', 'border-slate-200');
@@ -613,7 +617,6 @@ function buildSidebar() {
 function updateSidebarUI() {
     questions.forEach((q, idx) => {
         const btn = document.getElementById(`nav-btn-${idx}`);
-        // Base styling
         let classes = 'w-full aspect-square rounded-md font-medium text-sm border transition flex items-center justify-center ';
         
         if (currentState.submitted) {
@@ -682,7 +685,6 @@ function navigate(dir) {
     loadQuestion(currentState.currentIndex + dir);
 }
 
-/* --- RENDERERS --- */
 function renderMCQ(q, container) {
     q.options.forEach((opt, idx) => {
         const label = document.createElement('label');
@@ -939,7 +941,6 @@ function renderMatch(q, container) {
     container.appendChild(wrapper);
 }
 
-/* --- LOGIC PENILAIAN --- */
 function checkAnswerCorrectness(qId) {
     const q = questions.find(x => x.id === qId);
     const userAns = currentState.answers[qId];
@@ -972,30 +973,22 @@ function confirmSubmit() {
         msg = `<span class="text-red-600 font-semibold">PERINGATAN: Masih ada ${total - answered} soal yang BELUM dijawab!</span><br><br>Tetap kumpulkan?`;
     }
 
-    // Memasukkan pesan ke dalam modal kustom
     document.getElementById('submit-msg').innerHTML = msg;
     document.getElementById('submit-modal').classList.remove('hidden');
 }
 
 function cancelSubmit() {
-    // Menutup modal konfirmasi selesai tanpa keluar dari fullscreen
     document.getElementById('submit-modal').classList.add('hidden');
 }
 
 function proceedSubmit() {
-    // Lanjut menghitung skor dan tutup modal konfirmasi
     document.getElementById('submit-modal').classList.add('hidden');
     calculateScore();
 }
 
 function calculateScore() {
-    // Matikan Timer
     if (timerInterval) clearInterval(timerInterval);
     document.getElementById('timer-display').classList.add('hidden');
-
-    // CATATAN PENTING:
-    // Tidak ada pemanggilan document.exitFullscreen() di sini.
-    // Aplikasi akan tetap dalam mode fullscreen untuk reviu.
 
     currentState.submitted = true;
     let litCorrect = 0;
@@ -1042,25 +1035,20 @@ function reviewQuiz() {
 }
 
 /* --- PERLINDUNGAN FULLSCREEN & TOMBOL BACK --- */
-
-// Mendengarkan saat user secara sengaja/tidak sengaja keluar dari fullscreen
 document.addEventListener('fullscreenchange', checkFullscreen);
 document.addEventListener('webkitfullscreenchange', checkFullscreen);
 document.addEventListener('msfullscreenchange', checkFullscreen);
 
 function checkFullscreen() {
-    // Jika user masih login/ujian, dan layar tidak lagi fullscreen
     if (currentState.isLoggedIn) {
         const isFS = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
         if (!isFS) {
-            // Tampilkan layar paksaan kembali ke fullscreen
             document.getElementById('fullscreen-enforcer').classList.remove('hidden');
             document.getElementById('fullscreen-enforcer').classList.add('flex');
         }
     }
 }
 
-// Fungsi tombol untuk masuk kembali ke fullscreen
 function resumeFullscreen() {
     const elem = document.documentElement;
     let promise;
@@ -1084,29 +1072,22 @@ function resumeFullscreen() {
             document.getElementById('fullscreen-enforcer').classList.add('hidden');
             document.getElementById('fullscreen-enforcer').classList.remove('flex');
         }).catch(err => {
-            console.log("Kesalahan saat mengaktifkan kembali fullscreen:", err);
+            console.log("Kesalahan:", err);
         });
     }
 }
 
-// Menjebak tombol Back fisik di HP
 window.addEventListener('popstate', function(event) {
     if (currentState.isLoggedIn) {
-        // Paksa masukkan state baru agar tidak kembali ke halaman sblmnya
         history.pushState(null, document.title, location.href);
-        // Cek juga karena biasanya klik back di mobile akan menutup fullscreen otomatis
         checkFullscreen();
     }
 });
 
 /* --- FITUR ANTI-SCREENSHOT & ANTI-CHEAT --- */
-
-// 1. Mematikan Klik Kanan (Context Menu)
 document.addEventListener('contextmenu', event => event.preventDefault());
 
-// 2. Fungsi menyembunyikan layar menjadi putih
 function hideScreenForSecurity() {
-    // Hanya aktifkan proteksi jika sedang ujian (belum dikumpulkan dan sedang login)
     if (currentState.isLoggedIn && !currentState.submitted) {
         document.getElementById('anti-screenshot-overlay').classList.remove('hidden');
     }
@@ -1116,36 +1097,62 @@ function showScreenForSecurity() {
     document.getElementById('anti-screenshot-overlay').classList.add('hidden');
 }
 
-// 3. Deteksi saat jendela kehilangan fokus (Snipping tool, notifikasi melayang, atau pindah app)
 window.addEventListener('blur', hideScreenForSecurity);
 window.addEventListener('focus', showScreenForSecurity);
 
-// 4. Deteksi API Visibilitas (Aplikasi terminimize / tab pindah)
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        hideScreenForSecurity();
-    } else {
-        showScreenForSecurity();
-    }
+    if (document.hidden) hideScreenForSecurity();
+    else showScreenForSecurity();
 });
 
-// 5. Deteksi tombol keyboard spesifik (Print Screen, Windows+Shift+S, Cmd+Shift+3/4)
 window.addEventListener('keyup', (e) => {
     if (e.key === 'PrintScreen') {
-        try { navigator.clipboard.writeText(''); } catch(err) {} // Mencoba mengosongkan clipboard
+        try { navigator.clipboard.writeText(''); } catch(err) {}
         hideScreenForSecurity();
-        setTimeout(showScreenForSecurity, 2000); // Tahan layar putih selama 2 detik
+        setTimeout(showScreenForSecurity, 2000); 
     }
 });
 
 window.addEventListener('keydown', (e) => {
-    // Deteksi kombinasi Print (Ctrl+P) atau Shortcut Mac (Cmd+Shift)
     if ((e.ctrlKey && e.key === 'p') || (e.metaKey && e.shiftKey)) {
         e.preventDefault();
         hideScreenForSecurity();
         setTimeout(showScreenForSecurity, 2000);
     }
 });
+
+window.addEventListener('touchstart', (e) => {
+    if (e.touches.length >= 3) {
+        hideScreenForSecurity();
+        setTimeout(showScreenForSecurity, 3000); 
+    }
+}, { passive: false });
+
+/* --- ANTI SPLIT-SCREEN --- */
+function checkSplitScreen() {
+    if (!currentState.isLoggedIn || currentState.submitted) return;
+
+    const winW = window.innerWidth;
+    const winH = window.innerHeight;
+    const screenW = window.screen.availWidth || window.screen.width;
+    const screenH = window.screen.availHeight || window.screen.height;
+
+    const isSplitHorizontal = (winW / screenW) < 0.85;
+    const isSplitVertical = (winH / screenH) < 0.45;
+
+    const overlay = document.getElementById('split-screen-overlay');
+    
+    if (isSplitHorizontal || isSplitVertical) {
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+    } else {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+    }
+}
+
+window.addEventListener('resize', checkSplitScreen);
+setInterval(checkSplitScreen, 1500); 
 
 </script>
 </body>
